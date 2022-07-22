@@ -1,27 +1,26 @@
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SignUpHomeWorkTest {
-
-    WebDriver driver;
+public class SignUpHomeWorkTest extends BaseTest {
 
     @Test
-    public void signUpEmptyForm() {
-        WebDriverManager.edgedriver().setup();
-        driver = new EdgeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().maximize();
-        driver.get("http://www.kurs-selenium.pl/demo/register");
+    public void signUpEmptyFormTest() {
+        driver.findElements(By.xpath("//li[@id='li_myaccount']"))
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .findFirst()
+                .ifPresent(WebElement::click);
+        driver.findElements(By.xpath("//a[text()='  Sign Up']"))
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .findFirst()
+                .ifPresent(WebElement::click);
 
         driver.findElement(By.xpath("//button[text()=' Sign Up']")).click();
-
         List<String> errors = driver.findElements(By.xpath("//div[@class='alert alert-danger']/p"))
                 .stream()
                 .map(WebElement::getText)
@@ -32,18 +31,10 @@ public class SignUpHomeWorkTest {
         Assert.assertEquals(errors.get(2), "The Password field is required.");
         Assert.assertEquals(errors.get(3), "The First name field is required.");
         Assert.assertEquals(errors.get(4), "The Last Name field is required.");
-
-        driver.quit();
     }
 
     @Test
-    public void signUpInvalidEmail() {
-        WebDriverManager.edgedriver().setup();
-        WebDriver driver = new EdgeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().maximize();
-        driver.get("http://www.kurs-selenium.pl/demo/");
-
+    public void signUpInvalidEmailTest() {
         driver.findElements(By.xpath("//li[@id='li_myaccount']"))
                 .stream()
                 .filter(WebElement::isDisplayed)

@@ -1,9 +1,7 @@
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.testng.Assert;
@@ -13,12 +11,10 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HotelFind {
+public class HotelFindTest extends BaseTest {
 
     @Test
-    public void findHotel() {
-        WebDriverManager.edgedriver().setup();
-        WebDriver driver = new EdgeDriver();
+    public void findHotelTest() {
         FluentWait<WebDriver> wait = new FluentWait<>(driver)
                 .withTimeout(Duration.ofSeconds(5))
                 .pollingEvery(Duration.ofSeconds(1))
@@ -48,13 +44,7 @@ public class HotelFind {
     }
 
     @Test
-    public void findHotelWithoutCity() {
-        WebDriverManager.edgedriver().setup();
-        WebDriver driver = new EdgeDriver();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().maximize();
-        driver.get("http://www.kurs-selenium.pl/demo/");
-
+    public void findHotelWithoutCityTest() {
         driver.findElement(By.name("checkin")).sendKeys("25/07/2022");
         driver.findElement(By.name("checkout")).sendKeys("30/07/2022");
         driver.findElement(By.id("travellersInput")).click();
