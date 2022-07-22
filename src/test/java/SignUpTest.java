@@ -7,6 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.List;
 
 public class SignUpTest {
 
@@ -43,6 +44,7 @@ public class SignUpTest {
         driver.findElement(By.xpath("//button[text()=' Sign Up']")).click();
 
         WebElement header = driver.findElement(By.xpath("//h3[@class='RTL']"));
+
 
         Assert.assertTrue(header.getText().contains(firstName));
         Assert.assertEquals(header.getText(), "Hi, Michal Testowy");
