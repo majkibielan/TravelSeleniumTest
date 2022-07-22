@@ -1,6 +1,9 @@
+package pl.seleniumdemo.tests;
+
 import org.openqa.selenium.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pl.seleniumdemo.tests.BaseTest;
 
 import java.util.List;
 import java.util.stream.Collectors;

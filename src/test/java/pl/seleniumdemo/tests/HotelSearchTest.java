@@ -1,36 +1,25 @@
+package pl.seleniumdemo.tests;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pl.seleniumdemo.pages.HotelSearchPage;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HotelFindTest extends BaseTest {
+public class HotelSearchTest extends BaseTest {
 
     @Test
-    public void findHotelTest() {
-        FluentWait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(5))
-                .pollingEvery(Duration.ofSeconds(1))
-                .ignoring(NoSuchElementException.class);
-        driver.manage().window().maximize();
-        driver.get("http://www.kurs-selenium.pl/demo/");
+    public void searchHotelTest() {
 
-        driver.findElement(By.xpath("//span[text()='Search by Hotel or City Name']")).click();
-        driver.findElement(By.xpath("//div[@id='select2-drop']//input")).sendKeys("Dubai");
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@class='select2-match' and text()='Dubai']"))).click();
-        driver.findElement(By.name("checkin")).sendKeys("25/07/2022");
-        driver.findElement(By.name("checkout")).sendKeys("30/07/2022");
-        driver.findElement(By.id("travellersInput")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("adultPlusBtn"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("childPlusBtn"))).click();
-        driver.findElement(By.xpath("//button[text()=' Search']")).click();
+        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
+        hotelSearchPage.setCity("Dubai");
+        hotelSearchPage.setDates("25/07/2022", "30/07/2022");
+        hotelSearchPage.setTravellers();
+        hotelSearchPage.performSearch();
 
         List<String> hotelNames = driver.findElements(By.xpath("//h4//b"))
                                                         .stream()
