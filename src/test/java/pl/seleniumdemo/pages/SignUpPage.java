@@ -1,5 +1,6 @@
 package pl.seleniumdemo.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -34,8 +35,11 @@ public class SignUpPage {
     @FindBy(xpath = "//div[@class='alert alert-danger']/p")
     private List<WebElement> errors;
 
+    private WebDriver driver;
+
     public SignUpPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
+        this.driver = driver;
     }
 
     public void setFirstName(String firstName) {
