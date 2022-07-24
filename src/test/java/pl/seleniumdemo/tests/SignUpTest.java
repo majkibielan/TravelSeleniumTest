@@ -2,6 +2,7 @@ package pl.seleniumdemo.tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pl.seleniumdemo.pages.HotelSearchPage;
 import pl.seleniumdemo.pages.LoggedUserPage;
 import pl.seleniumdemo.pages.SignUpPage;
@@ -10,47 +11,50 @@ public class SignUpTest extends BaseTest {
 
     @Test
     public void signUpTest() {
-        String firstName = "Michal";
-        String lastName = "Testowy";
         int randomNumber = (int) (Math.random() * 1000);
         String email = "majki" + randomNumber + "@testowy.pl";
 
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        hotelSearchPage.openSignUpForm();
+        LoggedUserPage loggedUserPage = new HotelSearchPage(driver)
+                .openSignUpForm()
+                .setFirstName("Michal")
+                .setLastName("Testowy")
+                .setPhone("622111111")
+                .setEmail(email)
+                .setPassword("testpassword")
+                .setConfirmPassword("testpassword")
+                .signUp();
 
-        SignUpPage signUpPage = new SignUpPage(driver);
-        signUpPage.setFirstName(firstName);
-        signUpPage.setLastName(lastName);
-        signUpPage.setPhone("622111111");
-        signUpPage.setEmail(email);
-        signUpPage.setPassword("testpassword");
-        signUpPage.setConfirmPassword("testpassword");
-        signUpPage.signUp();
-
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        loggedUserPage.getHeadingText();
-
-        Assert.assertTrue(loggedUserPage.getHeadingText().contains(lastName));
-        Assert.assertEquals(loggedUserPage.getHeadingText(), "Hi, " + firstName + " " + lastName);
+        Assert.assertTrue(loggedUserPage.getHeadingText().contains("Michal"));
+        Assert.assertEquals(loggedUserPage.getHeadingText(), "Hi, Michal Testowy");
     }
 
     @Test
-    public void signUpTest2() {
-        String firstName = "Michal";
-        String lastName = "Testowy";
-        int randomNumber = (int) (Math.random() * 1000);
-        String email = "majki" + randomNumber + "@testowy.pl";
+    public void signUpEmptyFormTest() {
+        SignUpPage signUpPage = new HotelSearchPage(driver).openSignUpForm();
+        signUpPage.signUp();
 
-        HotelSearchPage hotelSearchPage = new HotelSearchPage(driver);
-        hotelSearchPage.openSignUpForm();
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertEquals(signUpPage.getErrorsList().get(0), "The Email field is required.");
+        softAssert.assertEquals(signUpPage.getErrorsList().get(1), "The Password field is required.");
+        softAssert.assertEquals(signUpPage.getErrorsList().get(2), "The Password field is required.");
+        softAssert.assertEquals(signUpPage.getErrorsList().get(3), "The First name field is required.");
+        softAssert.assertEquals(signUpPage.getErrorsList().get(4), "The Last Name field is required.");
+        softAssert.assertAll();
+    }
 
-        SignUpPage signUpPage = new SignUpPage(driver);
-        signUpPage.fillSignUpForm(firstName, lastName, "222333444", email, "testpassword");
+    @Test
+    public void signUpInvalidEmailTest() {
+        SignUpPage signUpPage = new HotelSearchPage(driver).openSignUpForm()
+                .setFirstName("Michal")
+                .setLastName("Testowy")
+                .setPhone("622111111")
+                .setEmail("majkitest.pl")
+                .setPassword("testpassword")
+                .setConfirmPassword("testpassword");
+        signUpPage.signUp();
 
-        LoggedUserPage loggedUserPage = new LoggedUserPage(driver);
-        loggedUserPage.getHeadingText();
+        // jesli test uruchamiany jest z http://www.kurs-selenium.pl/demo/register/ to wyrzuca StaleElementReferenceException przy assercji na errorze
 
-        Assert.assertTrue(loggedUserPage.getHeadingText().contains(lastName));
-        Assert.assertEquals(loggedUserPage.getHeadingText(), "Hi, " + firstName + " " + lastName);
+        Assert.assertTrue(signUpPage.getErrorsList().contains("The Email field must contain a valid email address."));
     }
 }
