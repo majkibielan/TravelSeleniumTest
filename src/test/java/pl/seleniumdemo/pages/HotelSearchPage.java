@@ -72,7 +72,7 @@ public class HotelSearchPage {
     }
 
     public void performSearch() {
-        searchButton.click();;
+        searchButton.click();
     }
 
     public void openSignUpForm() {
